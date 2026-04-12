@@ -10,6 +10,6 @@
 [submodule "services/notification-service"]
 	path = services/notification-service
 	url = https://github.com/Gammon64/vexorderplat-notification-service.git
-[submodule "services/analytcs-service"]
-	path = services/analytcs-service
+[submodule "services/analytics-service"]
+	path = services/analytics-service
 	url = https://github.com/Gammon64/vexorderplat-analytics-service.git
