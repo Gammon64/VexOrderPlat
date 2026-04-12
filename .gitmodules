@@ -6,4 +6,7 @@
 	url = https://github.com/Gammon64/vexorderplat-payment-service.git
 [submodule "services/inventory-service"]
 	path = services/inventory-service
-	url = https://github.com/Gammon64/inventory-service.git
+	url = https://github.com/Gammon64/vexorderplat-inventory-service.git
+[submodule "services/notification-service"]
+	path = services/notification-service
+	url = https://github.com/Gammon64/vexorderplat-notification-service.git
