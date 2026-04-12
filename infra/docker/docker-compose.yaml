@@ -1,7 +1,6 @@
-version: '3.8'
+version: "3.8"
 
 services:
-
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -33,7 +32,7 @@ services:
       - kafka
     volumes:
       - ./kafka/create-topics.sh:/create-topics.sh
-    entrypoint: [ "bash", "/create-topics.sh" ]
+    entrypoint: ["bash", "/create-topics.sh"]
 
   postgres:
     image: postgres:15
@@ -52,6 +51,10 @@ services:
     container_name: mongodb_orders
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB}
     volumes:
       - mongo_data:/data/db
 
