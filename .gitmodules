@@ -13,3 +13,6 @@
 [submodule "services/analytics-service"]
 	path = services/analytics-service
 	url = https://github.com/Gammon64/vexorderplat-analytics-service.git
+[submodule "frontend/vexorderplat-web"]
+	path = frontend/vexorderplat-web
+	url = https://github.com/Gammon64/vexorderplat-web.git
