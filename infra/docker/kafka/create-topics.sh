@@ -19,6 +19,12 @@ kafka-topics --create --if-not-exists \
   --bootstrap-server kafka:29092 \
   --replication-factor 1 \
   --partitions 3 \
-  --topic inventory.updated
+  --topic stock.reserved
+
+kafka-topics --create --if-not-exists \
+  --bootstrap-server kafka:29092 \
+  --replication-factor 1 \
+  --partitions 3 \
+  --topic stock.failed
 
 echo "Tópicos criados com sucesso!"

@@ -15,8 +15,8 @@ docker-compose up -d
 
 Você deve ver:
 
-* cluster
-* tópicos
+- cluster
+- tópicos
 
 ---
 
@@ -38,16 +38,16 @@ mongosh mongodb://localhost:27017
 
 # 🧠 Explicação técnica
 
-* Kafka configurado com listeners internos e externos
-* Zookeeper para coordenação
-* PostgreSQL para dados transacionais
-* MongoDB para leitura analítica
-* Kafka UI para inspeção de tópicos e mensagens
+- Kafka configurado com listeners internos e externos
+- Zookeeper para coordenação
+- PostgreSQL para dados transacionais
+- MongoDB para leitura analítica
+- Kafka UI para inspeção de tópicos e mensagens
 
 ---
 
 # 🔥 Possível upgrade futuro
 
-* KRaft (sem Zookeeper)
-* Schema Registry
-* Multi-broker cluster
+- KRaft (sem Zookeeper)
+- Schema Registry
+- Multi-broker cluster

@@ -1,303 +1,137 @@
-Projeto exemplo de microserviços com Kafka e containerização (Docker + Kubernetes)
+# 🚀 Event-Driven Microservices Platform
+
+## 📌 Overview
+
+Este projeto demonstra a construção de uma arquitetura de microsserviços baseada em eventos (_event-driven architecture_), utilizando mensageria assíncrona com Apache Kafka.
+
+O sistema simula um fluxo de e-commerce, onde a criação de um pedido dispara uma cadeia de eventos processados por múltiplos serviços independentes.
 
 ---
 
-# 🧠 1. Pensamento lógico do projeto
+## 🧠 Arquitetura
 
-A ideia aqui não é só “usar Kafka”, mas mostrar:
-
-* **Desacoplamento entre serviços**
-* **Consistência eventual**
-* **Escalabilidade**
-* **Resiliência**
-* **Observabilidade**
-
-👉 Então o projeto precisa responder:
-
-> *Por que Kafka aqui faz sentido?*
-
----
-
-### 📦 Sistema: **Plataforma de Pedidos (Order Platform)**
-
-Um mini-ecossistema inspirado em e-commerce / marketplace.
-
----
-
-## 🔄 Fluxo principal (evento-driven)
-
-1. Usuário cria pedido
-2. Pedido é salvo
-3. Evento é publicado no Kafka
-4. Outros serviços reagem:
-
-   * Pagamento processa
-   * Estoque valida
-   * Notificação envia mensagem
-   * Analytics registra
-
----
-
-## 📌 Por que isso é bom?
-
-Isso demonstra:
-
-* Comunicação síncrona (REST)
-* Comunicação assíncrona (Kafka)
-* Banco relacional + NoSQL
-* Separação de responsabilidades
-* Idempotência
-* Eventual consistency
-
----
-
-# 🧱 2. Arquitetura geral
-
-```
-[ API Gateway ]
-       |
-       v
-[ Order Service ] ---> Kafka ---> [ Payment Service ]
-       |                              |
-       |                              v
-       |                         PostgreSQL
-       |
-       ---> Kafka ---> [ Inventory Service ]
-       |
-       ---> Kafka ---> [ Notification Service ]
-       |
-       ---> Kafka ---> [ Analytics Service ]
-                                     |
-                                     v
-                                  MongoDB
-```
+- Microsserviços independentes
+- Comunicação assíncrona via eventos
+- Baixo acoplamento entre serviços
+- Processamento resiliente com DLQ
+- Notificações em tempo real via WebSocket
 
 ---
 
 ## 🧩 Serviços
 
-### 1. 🧾 Order Service (Java - Spring Boot)
-
-* Criação de pedidos
-* Publica evento `OrderCreated`
-* Banco: PostgreSQL
-
----
-
-### 2. 💳 Payment Service (Java)
-
-* Consome `OrderCreated`
-* Processa pagamento
-* Publica `PaymentApproved` ou `PaymentFailed`
-* Banco: PostgreSQL
+| Serviço              | Tecnologia         | Responsabilidade           |
+| -------------------- | ------------------ | -------------------------- |
+| order-service        | Java (Spring Boot) | Criação de pedidos         |
+| payment-service      | Java (Spring Boot) | Processamento de pagamento |
+| inventory-service    | Java (Spring Boot) | Validação de estoque       |
+| analytics-service    | Java (Spring Boot) | Registro de eventos        |
+| notification-service | Node (NestJS)      | Bridge Kafka → WebSocket   |
+| frontend             | Next.js            | Interface do usuário       |
 
 ---
 
-### 3. 📦 Inventory Service (Java ou Node)
+## 🔄 Fluxo Principal
 
-* Consome `OrderCreated`
-* Valida estoque
-* Publica `StockReserved` ou `OutOfStock`
+1. Usuário cria um pedido
+2. O `order-service` persiste e publica evento no Kafka
+3. Serviços consumidores reagem:
+   - `payment-service` → processa pagamento
+   - `inventory-service` → valida estoque
+   - `analytics-service` → registra evento
 
----
+4. Novos eventos são publicados:
+   - `payment.processed`
+   - `stock.reserved` ou `stock.failed`
 
-### 4. 🔔 Notification Service (Node.js)
-
-* Consome eventos
-* Simula envio de email/SMS
-
----
-
-### 5. 📊 Analytics Service (Node.js)
-
-* Consome TODOS os eventos
-* Armazena no MongoDB
-* Permite queries analíticas
+5. `notification-service` consome eventos e envia notificações em tempo real via WebSocket
 
 ---
 
-# 🧵 3. Kafka (coração do projeto)
+## 🌐 Frontend
 
-## 📌 Tópicos
+A aplicação frontend permite:
 
-* `order.created`
-* `payment.processed`
-* `inventory.updated`
-* `notification.sent`
+- Criar pedidos
+- Visualizar notificações em tempo real
+- Gerenciar estoque
 
 ---
 
-# 🗂️ 4. Estrutura do projeto (monorepo recomendado)
+## ⚙️ Tecnologias
 
-```
-kafka-microservices-project/
-│
-├── services/
-│   ├── order-service/
-│   ├── payment-service/
-│   ├── inventory-service/
-│   ├── notification-service/
-│   └── analytics-service/
-│
-├── infra/
-│   ├── docker/
-│   │   ├── docker-compose.yml
-│   │   └── kafka/
-│   │
-│   ├── kubernetes/
-│   │   ├── order-deployment.yaml
-│   │   ├── kafka.yaml
-│   │   └── ...
-│
-├── shared/
-│   ├── schemas/
-│   ├── events/
-│   └── utils/
-│
-├── docs/
-│   ├── architecture.md
-│   └── diagrams/
-│
-└── README.md
+- Java 21 + Spring Boot
+- Node.js + NestJS
+- React + Next.js
+- Apache Kafka
+- PostgreSQL
+- MongoDB
+- Docker
+- Kubernetes
+
+---
+
+## 🐳 Rodando localmente (Docker)
+
+```bash
+cd infra/docker
+docker-compose up --build
 ```
 
 ---
 
-# ⚙️ 5. Stack tecnológica
+## ☸️ Rodando no Kubernetes
 
-### Backend
+(Em construção)
 
-* Java (Spring Boot)
-* JavaScript (Node.js)
-
-### Mensageria
-
-* Apache Kafka
-
-### Banco
-
-* PostgreSQL → dados transacionais
-* MongoDB → eventos / analytics
-
-### Infra
-
-* Docker
-* Kubernetes
+```bash
+kubectl apply -k infra/k8s/overlays/local
+```
 
 ---
 
-# 🔐 6. Conceitos
+## 🧪 Testes
 
-## ✔️ 1. Idempotência
+(Em construção)
 
-Evitar duplicidade de processamento
-
-Exemplo:
-
-* Pedido recebido 2x → não cobrar 2x
+- Testes unitários
+- Testes de integração com containers
 
 ---
 
-## ✔️ 2. Retry + DLQ
+## 🔔 Notificações em tempo real
 
-Se falhar:
-
-* Tenta novamente
-* Se continuar falhando → vai para DLQ
+O `notification-service` atua como um **event bridge**, convertendo eventos Kafka em mensagens WebSocket consumidas pelo frontend.
 
 ---
 
-## ✔️ 3. Eventual Consistency
+## 📚 Documentação
 
-Sistema não é sincronizado instantaneamente
-
----
-
-## ✔️ 4. Observabilidade
-
-* Logs estruturados
-* Métricas (Prometheus)
-* Tracing (OpenTelemetry)
+- 📘 [Arquitetura](./docs/architecture.md)
+- 📡 [Eventos](./docs/events.md)
 
 ---
 
-## ✔️ 5. API Gateway
+## 📈 Diferenciais do projeto
 
-Pode usar (a decidir):
-
-* Spring Cloud Gateway
-* Ou Node.js (Express)
-
----
-
-# 🐳 7. Docker (base do projeto)
-
-* Kafka + Zookeeper
-* PostgreSQL
-* MongoDB
-* Serviços
-
-👉 Tudo rodando via `docker-compose`
+- Arquitetura orientada a eventos
+- Comunicação assíncrona com Kafka
+- Processamento resiliente com DLQ
+- Integração em tempo real com WebSocket
+- Deploy em Kubernetes
+- Integração entre múltiplas tecnologias (Java + Node + React)
 
 ---
 
-# ☸️ 8. Kubernetes
+## 🔮 Próximos passos
 
-* Deployments
-* Services
-* ConfigMaps
-* Secrets
-
----
-
-# 🚀 9. Primeiros passos
-
-Aqui está o caminho ideal:
+- Autenticação (JWT)
+- Observabilidade (logs, métricas, tracing)
+- Escalabilidade com múltiplas réplicas
+- Versionamento de eventos
 
 ---
 
-## 🥇 PASSO 1 — Infra básica
+## 👨‍💻 Autor
 
-* Subir:
-
-  * Kafka
-  * PostgreSQL
-  * MongoDB
-
----
-
-## 🥈 PASSO 2 — Primeiro serviço
-
-👉 Order Service
-
-* Criar pedido
-* Salvar no PostgreSQL
-* Publicar evento no Kafka
-
----
-
-## 🥉 PASSO 3 — Primeiro consumer
-
-👉 Payment Service
-
-* Consumir `order.created`
-* Simular pagamento
-
----
-
-## 🏗️ PASSO 4 — Expandir serviços
-
-* Inventory
-* Notification
-* Analytics
-
----
-
-## 🔁 PASSO 5 — Melhorias
-
-* Retry
-* DLQ
-* Logs
-* Testes
-
-(O texto contém geração de conteúdo por Inteligência Artificial)
+Projeto desenvolvido para fins de estudo e portfólio.
