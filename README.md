@@ -82,8 +82,6 @@ docker-compose up --build
 
 ## ☸️ Rodando no Kubernetes
 
-(Em construção)
-
 ```bash
 kubectl apply -k infra/k8s/overlays/local
 ```
@@ -91,8 +89,6 @@ kubectl apply -k infra/k8s/overlays/local
 ---
 
 ## 🧪 Testes
-
-(Em construção)
 
 - Testes unitários
 - Testes de integração com containers
@@ -132,6 +128,11 @@ O `notification-service` atua como um **event bridge**, convertendo eventos Kafk
 
 ---
 
-## 👨‍💻 Autor
+## ✅Status
+
+🚧 Work in Progress
+Event-driven architecture implemented. Kubernetes deployment and integration tests are currently under development.
+
+---
 
 Projeto desenvolvido para fins de estudo e portfólio.
